@@ -1,77 +1,74 @@
+const body = document.querySelector('body');
+const buttons = document.querySelectorAll('button');
+const displayDiv = document.createElement('div');
 
-game();
+body.appendChild(displayDiv);
 
-function game(){
-    let playerScore = 0;
-    let computerScore = 0;
-    let winResult = false;
-    for(let i = 0; i < 5; i++){
-        winResult = false;
-        winResult = playRound();
-        if(winResult === true)
-        {
-            playerScore++;
-        }
-        else{
-            computerScore++;
-        }
-        console.log(`SCORE: ${playerScore} - ${computerScore}`)
-    }
-    if(playerScore > computerScore){
-        console.log(`YOU WIN THE GAME! SCORE: ${playerScore} - ${computerScore}`)
-    }
-    else{
-        console.log(`YOU LOSE THE GAME! SCORE: ${playerScore} - ${computerScore}`)
-    }
-}
+const score = document.createElement('p');
+const results = document.createElement('p');
+const endmessage = document.createElement('p');
 
-function playRound(){
-let winnerDetermined = false;
-let computerSelection = "Nothing";
-let playerSelection = "Nothing";
-let playerWin = false;
+displayDiv.appendChild(results);
+displayDiv.appendChild(score);
 
 
-while(winnerDetermined === false){
-  computerSelection = getComputerChoice();
-  playerSelection = getUserChoice();
+let playerScore = 0;
+let computerScore = 0;
+
+buttons.forEach(button => button.addEventListener('click', playRound));
+
+
+
+
+function playRound(choice){
+let computerSelection = getComputerChoice();
+let playerSelection = capitalize(this.classList.value);
+
 
   if(playerSelection === computerSelection){
-    console.log("Tie!");
-    }
-    else if((playerSelection === "Rock" && computerSelection == "Scissors") || (playerSelection === "Paper" && computerSelection == "Rock") 
-    || (playerSelection === "Scissors" && computerSelection == "Paper")){
-        console.log(`${playerSelection} beats ${computerSelection}! You win this round!`);
-        winnerDetermined = true;
-        playerWin = true;
-    }
-    else {
-        console.log(`${computerSelection} beats ${playerSelection}! You lose this round!`);
-        winnerDetermined = true;
-    }
+    results.textContent = "Tie!";
+    score.textContent = `SCORE: Player ${playerScore} - Computer ${computerScore}`;
   }
-  return playerWin;
+
+  else if((playerSelection === "Rock" && computerSelection == "Scissors") || (playerSelection === "Paper" && computerSelection == "Rock") 
+    || (playerSelection === "Scissors" && computerSelection == "Paper")){
+        results.textContent = `${playerSelection} beats ${computerSelection}! You win this round!`;
+        playerScore++;
+        score.textContent = `SCORE: Player ${playerScore} - Computer ${computerScore}`;
+   }
+
+  else {
+        results.textContent = `${computerSelection} beats ${playerSelection}! You lose this round!`;
+        computerScore++;
+        score.textContent = `SCORE: Player ${playerScore} - Computer ${computerScore}`;
+    }
+
+    if (playerScore > 4 || computerScore > 4){
+
+      buttons.forEach(button => button.removeEventListener('click', playRound));
+
+      if(playerScore > computerScore){
+      results.textContent =`YOU WIN THE GAME!`;
+      score.textContent = `SCORE: ${playerScore} - ${computerScore}`;
+      }
+      else{
+        results.textContent =`YOU LOSE THE GAME!`
+        score.textContent = `SCORE: ${playerScore} - ${computerScore}`;
+      }
+    }
 }
 
 
-function getUserChoice(){
+function capitalize(choice){
     let chosen = false;
-    let selection = "NOCHOICE";
+    let selection = choice;
     let firstLetter = "None";
     let capLetter = "None";
     
 
-    while(chosen === false){
-      selection = prompt("Choose Rock, Scissors, or Paper");
-      selection = selection.toLowerCase();
-      if (selection === "rock" || selection === "scissors" || selection === "paper" ){
-        chosen = true;
-      }
-    }
     firstLetter = selection.charAt(0);
     capLetter = firstLetter.toUpperCase(),
     selection = selection.replace(firstLetter, capLetter);
-    console.log(selection);
     return selection;
 }
 
@@ -92,3 +89,4 @@ function getComputerChoice(){
     }
     return choice;
 }
+
